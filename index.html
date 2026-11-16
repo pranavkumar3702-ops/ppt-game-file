@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>5ire Eco-Fighter - Battle Against Global Warming</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Rajdhani', sans-serif;
+      background-color: #060d0a;
+      color: #fff;
+      user-select: none;
+      overflow-x: hidden;
+    }
+    .font-arcade {
+      font-family: 'Press Start 2P', cursive;
+    }
+
+    /* CRT Scanline Effect */
+    .crt::before {
+      content: " ";
+      display: block;
+      position: absolute;
+      top: 0; left: 0; bottom: 0; right: 0;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.04), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.04));
+      z-index: 40;
+      background-size: 100% 3px, 3px 100%;
+      pointer-events: none;
+    }
+
+    /* Screen Shake */
+    @keyframes shake {
+      0% { transform: translate(2px, 1px) rotate(0deg); }
+      15% { transform: translate(-3px, -2px) rotate(-1deg); }
+      30% { transform: translate(4px, 0px) rotate(1deg); }
+      45% { transform: translate(-4px, 2px) rotate(0deg); }
+      60% { transform: translate(3px, -1px) rotate(1deg); }
+      75% { transform: translate(-2px, 2px) rotate(-1deg); }
+      100% { transform: translate(0, 0) rotate(0deg); }
+    }
+    .shake {
+      animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+    }
+
+    /* Fighter Idle Animations */
+    @keyframes idlePlayer {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+    @keyframes idleBoss {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-8px) scale(1.03); }
+    }
+    .idle-player { animation: idlePlayer 1.2s infinite ease-in-out; }
+    .idle-boss { animation: idleBoss 1.3s infinite ease-in-out; }
+
+    /* Hero Cast Pose */
+    @keyframes heroCast {
+      0% { transform: translateX(0) scale(1); }
+      30% { transform: translateX(25px) scale(1.08); filter: drop-shadow(0 0 15px #10b981); }
+      100% { transform: translateX(0) scale(1); }
+    }
+    .hero-cast { animation: heroCast 0.55s ease-out; }
+
+    /* Boss Attack Animation */
+    @keyframes bossSmogAttack {
+      0% { transform: translateX(0); }
+      35% { transform: translateX(-140px) scale(1.15); filter: drop-shadow(0 0 20px #ef4444); }
+      100% { transform: translateX(0); }
+    }
+    .boss-attack { animation: bossSmogAttack 0.45s ease-out; }
+
+    /* One-Blow KO Boss Finisher */
+    @keyframes bossOneBlow {
+      0% { transform: translateX(0) scale(1); }
+      25% { transform: translateX(30px) scale(1.3); filter: brightness(2) drop-shadow(0 0 30px #ff3300); }
+      55% { transform: translateX(-250px) scale(1.7); filter: brightness(3) drop-shadow(0 0 45px #ff0000); }
+      100% { transform: translateX(0) scale(1); }
+    }
+    .boss-one-blow { animation: bossOneBlow 1.1s forwards cubic-bezier(0.68, -0.55, 0.27, 1.55); }
+
+    /* Hit Reaction */
+    @keyframes hitHurt {
+      0% { filter: brightness(1); transform: translateX(0); }
+      25% { filter: brightness(3) hue-rotate(90deg); transform: translateX(16px); }
+      50% { filter: brightness(2); transform: translateX(-12px); }
+      100% { filter: brightness(1); transform: translateX(0); }
+    }
+    .hit-hurt { animation: hitHurt 0.4s forwards; }
+
+    /* ECO-POWER PROJECTILE ANIMATIONS */
+    /* 1. Solar Beam */
+    @keyframes solarBeamAnim {
+      0% { width: 0; opacity: 0.4; transform: scaleY(0.4); }
+      30% { width: 62%; opacity: 1; transform: scaleY(1.3); }
+      80% { width: 62%; opacity: 1; transform: scaleY(1); }
+      100% { width: 62%; opacity: 0; transform: scaleY(0.1); }
+    }
+    .fx-solar-beam {
+      position: absolute;
+      left: 18%;
+      bottom: 38%;
+      height: 36px;
+      background: linear-gradient(90deg, #fef08a, #f59e0b, #ffffff, #f59e0b);
+      box-shadow: 0 0 25px #facc15, 0 0 50px #f59e0b;
+      border-radius: 999px;
+      z-index: 25;
+      pointer-events: none;
+      animation: solarBeamAnim 0.6s forwards ease-out;
+    }
+
+    /* 2. Clean Water Tidal Wave */
+    @keyframes cleanWaterAnim {
+      0% { left: 18%; transform: scale(0.5); opacity: 0.9; }
+      75% { left: 72%; transform: scale(1.5); opacity: 1; }
+      100% { left: 78%; transform: scale(2.1); opacity: 0; }
+    }
+    .fx-clean-water {
+      position: absolute;
+      bottom: 22%;
+      width: 110px;
+      height: 110px;
+      background: radial-gradient(circle, #e0f2fe 15%, #38bdf8 55%, #0284c7 90%);
+      box-shadow: 0 0 30px #38bdf8, inset 0 0 15px #ffffff;
+      border-radius: 50% 50% 40% 60%;
+      z-index: 25;
+      pointer-events: none;
+      animation: cleanWaterAnim 0.6s forwards cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    /* 3. Purified Air Cyclone */
+    @keyframes purifiedAirAnim {
+      0% { left: 18%; transform: rotate(0deg) scale(0.6); opacity: 0.8; }
+      75% { left: 72%; transform: rotate(540deg) scale(1.4); opacity: 1; }
+      100% { left: 78%; transform: rotate(720deg) scale(1.9); opacity: 0; }
+    }
+    .fx-purified-air {
+      position: absolute;
+      bottom: 25%;
+      width: 100px;
+      height: 100px;
+      border: 6px dashed #a7f3d0;
+      border-top-color: #10b981;
+      border-bottom-color: #ffffff;
+      box-shadow: 0 0 25px #34d399;
+      border-radius: 50%;
+      z-index: 25;
+      pointer-events: none;
+      animation: purifiedAirAnim 0.6s forwards ease-in-out;
+    }
+
+    /* Smog Smoke Puff */
+    @keyframes smokeFloat {
+      0%, 100% { transform: translateY(0) scale(1); opacity: 0.7; }
+      50% { transform: translateY(-10px) scale(1.15); opacity: 0.95; }
+    }
+    .smog-puff { animation: smokeFloat 2s infinite ease-in-out; }
+
+    /* Health Bar Smooth Transition */
+    .hp-bar-inner {
+      transition: width 0.4s ease-out;
+    }
+
+    /* Floating Pop Text */
+    @keyframes floatText {
+      0% { opacity: 1; transform: translateY(0) scale(0.9); }
+      40% { opacity: 1; transform: translateY(-35px) scale(1.25); }
+      100% { opacity: 0; transform: translateY(-70px) scale(0.9); }
+    }
+    .damage-pop {
+      position: absolute;
+      animation: floatText 0.95s forwards ease-out;
+      pointer-events: none;
+      font-family: 'Press Start 2P', cursive;
+      text-shadow: 2px 2px 0 #000;
+      z-index: 35;
+    }
+
+    /* Screen Flash Overlays */
+    @keyframes flashAnim {
+      0% { opacity: 0; }
+      25% { opacity: 0.45; }
+      100% { opacity: 0; }
+    }
+    .flash-overlay {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 32;
+    }
+    .flash-solar { background: #facc15; animation: flashAnim 0.45s forwards; }
+    .flash-water { background: #38bdf8; animation: flashAnim 0.45s forwards; }
+    .flash-air { background: #34d399; animation: flashAnim 0.45s forwards; }
+    .flash-red { background: #dc2626; animation: flashAnim 0.4s forwards; }
+  </style>
+</head>
+<body class="bg-gray-950 text-white h-screen flex flex-col justify-between crt overflow-hidden relative">
+
+  <!-- FLASH OVERLAY -->
+  <div id="flashOverlay" class="flash-overlay"></div>
+
+  <!-- TOP HEADER / ARCADE HUD -->
+  <header class="w-full p-3 sm:p-4 bg-emerald-950/90 border-b-4 border-emerald-400 z-30 shadow-2xl">
+    <div class="max-w-6xl mx-auto flex flex-col gap-2">
+
+      <!-- TOP BAR -->
+      <div class="flex justify-between items-center text-xs sm:text-sm font-arcade">
+        <span class="text-emerald-300 tracking-wider flex items-center gap-2">
+          <span class="inline-block w-3 h-3 bg-emerald-400 rounded-full animate-ping"></span>
+          5IRE ECO-DEFENDER VS GLOBAL WARMING
+        </span>
+        <div id="roundBadge" class="bg-amber-500 text-black px-3 py-1 rounded font-bold border-2 border-yellow-200">
+          ROUND 1 / 10
+        </div>
+      </div>
+
+      <!-- HEALTH BARS -->
+      <div class="grid grid-cols-12 gap-2 sm:gap-4 items-center">
+
+        <!-- HERO HUD -->
+        <div class="col-span-5">
+          <div class="flex justify-between items-center text-xs sm:text-sm font-arcade mb-1">
+            <span class="text-emerald-300 font-bold">5IRE ECO-HERO</span>
+            <span id="playerHpText" class="text-emerald-400">100 HP</span>
+          </div>
+          <div class="w-full bg-gray-950 h-5 sm:h-7 rounded border-2 border-emerald-400 p-0.5 overflow-hidden">
+            <div id="playerHpBar" class="hp-bar-inner bg-gradient-to-r from-emerald-600 via-green-400 to-teal-300 h-full w-full"></div>
+          </div>
+        </div>
+
+        <!-- VS & COMBO -->
+        <div class="col-span-2 text-center">
+          <div class="font-arcade text-lg sm:text-2xl text-amber-400 italic drop-shadow-[0_0_8px_rgba(251,191,36,0.8)]">VS</div>
+          <div id="comboCounter" class="text-[10px] sm:text-xs font-arcade text-emerald-300 opacity-0 transition-opacity">
+            <span id="comboHits">0</span>x ECO COMBO!
+          </div>
+        </div>
+
+        <!-- BOSS HUD -->
+        <div class="col-span-5 text-right">
+          <div class="flex justify-between items-center text-xs sm:text-sm font-arcade mb-1">
+            <span id="bossHpText" class="text-red-400">100 HP</span>
+            <span class="text-orange-400 font-bold">SMOG &amp; WARMING TITAN</span>
+          </div>
+          <div class="w-full bg-gray-950 h-5 sm:h-7 rounded border-2 border-orange-500 p-0.5 overflow-hidden">
+            <div id="bossHpBar" class="hp-bar-inner bg-gradient-to-l from-red-600 via-orange-500 to-amber-500 h-full w-full"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- FIGHTING ARENA -->
+  <main id="arena" class="relative flex-1 w-full max-w-6xl mx-auto flex flex-col justify-between p-4 my-2 rounded-xl border-2 border-emerald-900 overflow-hidden"
+        style="background: linear-gradient(90deg, #064e3b 0%, #1e293b 50%, #450a0a 100%);">
+
+    <!-- BACKGROUND ECO VS POLLUTION SCENERY -->
+    <div class="absolute inset-0 opacity-25 pointer-events-none flex justify-between items-end px-8">
+      <!-- Left: Clean Wind Turbines & Solar Trees -->
+      <div class="flex items-end gap-4">
+        <svg class="w-24 h-56 text-emerald-300" viewBox="0 0 100 220" fill="currentColor">
+          <rect x="47" y="60" width="6" height="160"/>
+          <circle cx="50" cy="60" r="8"/>
+          <polygon points="50,60 44,5 56,5"/>
+          <polygon points="50,60 95,88 89,98"/>
+          <polygon points="50,60 5,88 11,98"/>
+        </svg>
+        <svg class="w-16 h-40 text-teal-300" viewBox="0 0 100 220" fill="currentColor">
+          <rect x="47" y="60" width="6" height="160"/>
+          <circle cx="50" cy="60" r="8"/>
+          <polygon points="50,60 44,5 56,5"/>
+          <polygon points="50,60 95,88 89,98"/>
+          <polygon points="50,60 5,88 11,98"/>
+        </svg>
+      </div>
+
+      <!-- Right: Polluting Factory Smokestacks -->
+      <div class="flex items-end gap-3">
+        <div class="w-12 h-48 bg-stone-800 border-t-4 border-orange-500 relative">
+          <div class="w-16 h-10 bg-stone-600 rounded-full -top-12 -left-2 absolute smog-puff"></div>
+        </div>
+        <div class="w-16 h-64 bg-stone-900 border-t-4 border-red-600 relative">
+          <div class="w-20 h-14 bg-stone-500 rounded-full -top-16 -left-2 absolute smog-puff"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DYNAMIC FX & DAMAGE POP LAYER -->
+    <div id="fxLayer" class="absolute inset-0 pointer-events-none z-25"></div>
+    <div id="damagePopContainer" class="absolute inset-0 pointer-events-none z-35"></div>
+
+    <!-- CHARACTERS ROW -->
+    <div class="relative w-full h-48 sm:h-64 flex justify-between items-end px-6 sm:px-16 z-20 mb-1">
+
+      <!-- PLAYER: MAN WITH 5IRE LOGO -->
+      <div id="playerSprite" class="relative w-32 sm:w-40 h-44 sm:h-52 idle-player flex flex-col items-center justify-end">
+        <svg viewBox="0 0 160 200" class="w-full h-full drop-shadow-[0_6px_12px_rgba(16,185,129,0.5)]">
+          <!-- Eco Cape -->
+          <path d="M45 75 L20 165 L65 155 Z" fill="#059669" stroke="#022c22" stroke-width="3"/>
+          <!-- Legs -->
+          <rect x="56" y="135" width="18" height="52" rx="6" fill="#0f172a" stroke="#022c22" stroke-width="3"/>
+          <rect x="86" y="135" width="18" height="52" rx="6" fill="#0f172a" stroke="#022c22" stroke-width="3"/>
+          <!-- Eco Boots -->
+          <rect x="52" y="175" width="24" height="14" rx="5" fill="#10b981" stroke="#022c22" stroke-width="3"/>
+          <rect x="84" y="175" width="24" height="14" rx="5" fill="#10b981" stroke="#022c22" stroke-width="3"/>
+          <!-- Torso (5ire Hero Suit) -->
+          <rect x="46" y="68" width="68" height="72" rx="14" fill="#ecfdf5" stroke="#059669" stroke-width="4"/>
+          <!-- Prominent 5ire Emblem & Text on Chest -->
+          <circle cx="80" cy="102" r="24" fill="#064e3b" stroke="#10b981" stroke-width="3"/>
+          <path d="M74 87 L87 87 L87 92 L79 92 L78 97 C84 96 89 100 89 106 C89 112 84 116 78 116 C73 116 70 113 69 110 L74 108 C75 110 76 111 78 111 C81 111 83 109 83 106 C83 103 81 101 78 101 C76 101 75 102 74 103 L70 101 Z" fill="#34d399"/>
+          <text x="80" y="123" font-family="Arial, sans-serif" font-weight="900" font-size="9" fill="#a7f3d0" text-anchor="middle">5ire</text>
+          <!-- Left Arm -->
+          <rect x="28" y="74" width="18" height="46" rx="9" fill="#10b981" stroke="#022c22" stroke-width="3" transform="rotate(15 35 75)"/>
+          <!-- Right Punching / Casting Arm -->
+          <rect x="110" y="74" width="40" height="18" rx="9" fill="#10b981" stroke="#022c22" stroke-width="3"/>
+          <circle cx="148" cy="83" r="10" fill="#fde68a" stroke="#022c22" stroke-width="3"/>
+          <!-- Head -->
+          <circle cx="80" cy="40" r="24" fill="#fde68a" stroke="#022c22" stroke-width="3"/>
+          <!-- Hair -->
+          <path d="M56 36 C56 14 104 14 104 36 C96 24 64 24 56 36 Z" fill="#1e293b"/>
+          <!-- Green Eco Visor -->
+          <rect x="64" y="32" width="36" height="11" rx="5" fill="#10b981" stroke="#022c22" stroke-width="2"/>
+          <line x1="69" y1="36" x2="86" y2="36" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+
+      <!-- BOSS: GLOBAL WARMING & POLLUTION TITAN -->
+      <div id="bossSprite" class="relative w-36 sm:w-48 h-48 sm:h-56 idle-boss flex flex-col items-center justify-end">
+        <svg viewBox="0 0 180 210" class="w-full h-full drop-shadow-[0_6px_18px_rgba(239,68,68,0.65)]">
+          <!-- Toxic Smog Aura Clouds -->
+          <circle cx="45" cy="60" r="24" fill="#44403c" opacity="0.85"/>
+          <circle cx="135" cy="55" r="26" fill="#292524" opacity="0.85"/>
+          <circle cx="90" cy="35" r="28" fill="#57534e" opacity="0.8"/>
+          <!-- Monster Legs -->
+          <rect x="52" y="145" width="26" height="55" rx="8" fill="#1c1917" stroke="#7f1d1d" stroke-width="3"/>
+          <rect x="102" y="145" width="26" height="55" rx="8" fill="#1c1917" stroke="#7f1d1d" stroke-width="3"/>
+          <!-- Molten Core Body -->
+          <rect x="38" y="65" width="104" height="88" rx="22" fill="#292524" stroke="#ef4444" stroke-width="4"/>
+          <!-- Lava Cracks & CO2 Warning -->
+          <path d="M55 85 L80 105 L65 130 M125 85 L100 110 L115 135" stroke="#f97316" stroke-width="4" fill="none"/>
+          <rect x="62" y="96" width="56" height="24" rx="6" fill="#7f1d1d" stroke="#facc15" stroke-width="2"/>
+          <text x="90" y="112" font-family="Arial, sans-serif" font-weight="900" font-size="12" fill="#fef08a" text-anchor="middle">CO₂ TITAN</text>
+          <!-- Giant Smog Arms -->
+          <rect x="8" y="75" width="32" height="62" rx="14" fill="#44403c" stroke="#ef4444" stroke-width="3"/>
+          <rect x="140" y="75" width="32" height="62" rx="14" fill="#44403c" stroke="#ef4444" stroke-width="3"/>
+          <!-- Monster Head with Smokestack Horns -->
+          <rect x="58" y="25" width="64" height="46" rx="14" fill="#1c1917" stroke="#ef4444" stroke-width="3"/>
+          <!-- Smokestack Horns -->
+          <rect x="64" y="6" width="12" height="22" fill="#57534e" stroke="#ef4444" stroke-width="2"/>
+          <rect x="104" y="6" width="12" height="22" fill="#57534e" stroke="#ef4444" stroke-width="2"/>
+          <!-- Glowing Fiery Eyes -->
+          <circle cx="76" cy="44" r="6" fill="#facc15"/>
+          <circle cx="104" cy="44" r="6" fill="#facc15"/>
+          <!-- Jagged Furnace Mouth -->
+          <polygon points="70,58 78,53 85,59 92,53 100,59 110,55 105,64 75,64" fill="#ef4444"/>
+        </svg>
+      </div>
+
+    </div>
+
+    <!-- ARENA FLOOR -->
+    <div class="w-full h-4 rounded-full bg-gradient-to-r from-emerald-400 via-teal-500 to-red-600 border-t-2 border-white shadow-[0_0_15px_rgba(16,185,129,0.8)]"></div>
+
+  </main>
+
+  <!-- QUESTION & ANSWER PANEL -->
+  <section class="w-full max-w-6xl mx-auto p-3 sm:p-5 bg-gray-900/95 border-t-4 border-emerald-400 z-30 mb-2 rounded-t-xl shadow-2xl">
+
+    <!-- QUESTION BOX -->
+    <div class="mb-3 sm:mb-4 bg-black/80 p-3 sm:p-4 rounded-lg border border-emerald-500/50">
+      <div class="flex flex-wrap items-center justify-between gap-2 mb-1">
+        <div class="flex items-center gap-2">
+          <span class="bg-emerald-500 text-black text-[10px] font-arcade px-2 py-0.5 rounded font-bold">ECO-QUIZ</span>
+          <span id="questionTopic" class="text-xs text-amber-300 font-bold tracking-wider uppercase">Topic: Leadership</span>
+        </div>
+        <span class="text-[11px] text-emerald-300 font-semibold">
+          ⚡ Random Eco-Power: Solar Beam • Clean Water • Purified Air
+        </span>
+      </div>
+      <h2 id="questionText" class="text-base sm:text-xl font-bold text-white leading-snug">
+        Loading Question...
+      </h2>
+    </div>
+
+    <!-- 4 OPTIONS GRID -->
+    <div id="optionsGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3"></div>
+
+  </section>
+
+  <!-- END GAME RESULT MODAL -->
+  <div id="resultModal" class="hidden fixed inset-0 bg-black/95 z-50 flex flex-col justify-center items-center p-4 text-center crt">
+    <div class="max-w-xl w-full bg-gray-900 border-4 border-emerald-400 rounded-xl p-6 sm:p-8 shadow-[0_0_50px_rgba(16,185,129,0.5)]">
+
+      <h1 id="modalTitle" class="font-arcade text-2xl sm:text-4xl text-emerald-400 mb-3">
+        PLANET SAVED!
+      </h1>
+
+      <p id="modalSubtitle" class="font-arcade text-xs sm:text-sm text-amber-300 mb-6 leading-relaxed">
+        GLOBAL WARMING TITAN PURIFIED!
+      </p>
+
+      <!-- STATS BOARD -->
+      <div class="bg-black/80 rounded-lg p-4 border border-gray-700 text-left font-arcade text-xs sm:text-sm space-y-3 mb-6">
+        <div class="flex justify-between border-b border-gray-800 pb-2">
+          <span class="text-gray-400">CORRECT ANSWERS:</span>
+          <span id="statScore" class="text-emerald-400">0 / 10</span>
+        </div>
+        <div class="flex justify-between border-b border-gray-800 pb-2">
+          <span class="text-gray-400">ACCURACY:</span>
+          <span id="statAccuracy" class="text-yellow-400">0%</span>
+        </div>
+        <div class="flex justify-between border-b border-gray-800 pb-2">
+          <span class="text-gray-400">PASS REQUIREMENT:</span>
+          <span class="text-cyan-400">65% ACCURACY</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-gray-400">BATTLE OUTCOME:</span>
+          <span id="statStatus" class="text-emerald-400 font-bold">VICTORY</span>
+        </div>
+      </div>
+
+      <button onclick="resetGame()"
+              class="w-full py-4 bg-gradient-to-r from-emerald-500 via-teal-400 to-amber-400 text-black font-arcade text-xs sm:text-sm font-bold rounded-lg border-2 border-white hover:scale-105 active:scale-95 transition-transform shadow-[0_0_20px_rgba(16,185,129,0.6)]">
+        🌱 PLAY AGAIN / DEFEND EARTH 🌱
+      </button>
+
+    </div>
+  </div>
+
+  <script>
+    /* ===================================================================
+       1. 5IRE CASE STUDY QUESTIONS (BOTH DECKS, EXCLUDING SLIDE 7 OF BOTH)
+       =================================================================== */
+    const questions = [
+      {
+        topic: "Deck 1 • Slide 2: Leadership",
+        q: "Who is the CEO and co-founder of 5ire known for championing the 5th Industrial Revolution (5IR)?",
+        options: [
+          "Nandan Nilekani",
+          "Pratik Gauri",
+          "Pawan Kumar Chandana",
+          "Naga Bharath Daka"
+        ],
+        answer: 1
+      },
+      {
+        topic: "Deck 1 • Slide 4: Sustainable PoS",
+        q: "What percentage of transaction gas fees does 5ireChain return as rebates to incentivize eco-conscious usage?",
+        options: [
+          "15%",
+          "25%",
+          "50%",
+          "90%"
+        ],
+        answer: 2
+      },
+      {
+        topic: "Deck 1 • Slide 6: Capital Milestones",
+        q: "What peak valuation did 5ire reach within 11 months of founding during its $100M Series A round?",
+        options: [
+          "$450 Million",
+          "$5.0 Billion",
+          "$110 Million",
+          "$1.5 Billion (Unicorn)"
+        ],
+        answer: 3
+      },
+      {
+        topic: "Deck 1 • Slide 8: Marketing Mix (4Ps)",
+        q: "Which prominent Indian policy think tank did 5ire partner with for Web3 educational modules?",
+        options: [
+          "ISRO",
+          "NITI Aayog",
+          "SEBI",
+          "TRAI"
+        ],
+        answer: 1
+      },
+      {
+        topic: "Deck 1 • Slide 9: Porter's 5 Forces",
+        q: "Why is 'Competitive Rivalry' rated HIGH for 5ire in the Layer-1 blockchain market?",
+        options: [
+          "There are no smart contract developers in Asia",
+          "Governments banned all Proof-of-Stake networks",
+          "Ethereum, Solana, and NEAR already dominate developer liquidity",
+          "5ire refuses to support EVM compatibility"
+        ],
+        answer: 2
+      },
+      {
+        topic: "Deck 2 • Slide 3: Funding Scrutiny",
+        q: "What did critics point out regarding 5ire's February 2022 $100M capital commitment claim from GEM?",
+        options: [
+          "It was paid entirely in physical gold bars",
+          "It was a conditional capital drawdown facility rather than wired cash",
+          "It was rejected by the Dubai Central Bank",
+          "It was exclusively earmarked for Bitcoin mining"
+        ],
+        answer: 1
+      },
+      {
+        topic: "Deck 2 • Slide 4: Governance Rift",
+        q: "Which co-founder exited 5ire in July 2023 amid public disagreements over unilateral management decisions?",
+        options: [
+          "Prateek Dwivedi",
+          "Didier Drogba",
+          "Vilma Mattila",
+          "Naga Bharath Daka"
+        ],
+        answer: 2
+      },
+      {
+        topic: "Deck 2 • Slide 5: Timeline of Events",
+        q: "What major industry event did 5ire cite when postponing its Token Generation Event (TGE) in December 2022?",
+        options: [
+          "The Ethereum Merge",
+          "A solar flare outage",
+          "Indian UPI tax regulations",
+          "The FTX collapse and market fallout"
+        ],
+        answer: 3
+      },
+      {
+        topic: "Deck 2 • Slide 6: Post-Listing Backlash",
+        q: "By more than what percentage did the 5IRE token price drop from its $0.44 listing peak due to unlock sell pressure?",
+        options: [
+          "20%",
+          "45%",
+          "85%",
+          "10%"
+        ],
+        answer: 2
+      },
+      {
+        topic: "Deck 2 • Slide 8 & 9: Fact-Check & Community",
+        q: "According to investigative reports and community critics, what was a major issue with 5ire's dozens of announced MoUs?",
+        options: [
+          "They were non-binding with minimal active on-chain mainnet usage",
+          "They required validators to burn solar panels",
+          "They forced retail users to lock funds for 50 years",
+          "They banned developers from using EVM tools"
+        ],
+        answer: 0
+      }
+    ];
+
+    /* ===================================================================
+       2. HERO ECO-POWERS CONFIGURATION (RANDOM ORDER & DISTINCT EFFECTS)
+       =================================================================== */
+    const ECO_POWERS = [
+      {
+        id: 'solar',
+        name: 'SOLAR BEAM!',
+        subtitle: 'Clean Renewable Surge!',
+        fxClass: 'fx-solar-beam',
+        flashClass: 'flash-solar',
+        textColor: 'text-yellow-300'
+      },
+      {
+        id: 'water',
+        name: 'CLEAN WATER!',
+        subtitle: 'Toxic Sludge Washed Away!',
+        fxClass: 'fx-clean-water',
+        flashClass: 'flash-water',
+        textColor: 'text-sky-300'
+      },
+      {
+        id: 'air',
+        name: 'PURIFIED AIR!',
+        subtitle: 'CO₂ Smog Neutralized!',
+        fxClass: 'fx-purified-air',
+        flashClass: 'flash-air',
+        textColor: 'text-emerald-300'
+      }
+    ];
+
+    /* ===================================================================
+       3. WEB AUDIO API SYNTHESIZER (REALISTIC LASER, SPLASH & HARD WIND)
+       =================================================================== */
+    class EcoAudioEngine {
+      constructor() {
+        this.ctx = null;
+      }
+
+      init() {
+        if (!this.ctx) {
+          this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      }
+
+      // 1. Solar Beam Audio: High-tech Sci-Fi Laser Beam Pew + Energy Hum
+      playSolarBeam() {
+        this.init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+
+        // Sharp downward frequency laser sweep
+        const laserOsc = this.ctx.createOscillator();
+        const laserGain = this.ctx.createGain();
+        laserOsc.type = 'sawtooth';
+        laserOsc.frequency.setValueAtTime(2400, now);
+        laserOsc.frequency.exponentialRampToValueAtTime(140, now + 0.38);
+
+        // Resonant low-pass filter for crisp sci-fi bite
+        const filter = this.ctx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.Q.value = 8;
+        filter.frequency.setValueAtTime(3200, now);
+        filter.frequency.exponentialRampToValueAtTime(300, now + 0.38);
+
+        laserGain.gain.setValueAtTime(0.45, now);
+        laserGain.gain.exponentialRampToValueAtTime(0.001, now + 0.42);
+
+        laserOsc.connect(filter);
+        filter.connect(laserGain);
+        laserGain.connect(this.ctx.destination);
+
+        // Secondary high-frequency harmonic beam shimmer
+        const shimmer = this.ctx.createOscillator();
+        const shimmerGain = this.ctx.createGain();
+        shimmer.type = 'square';
+        shimmer.frequency.setValueAtTime(1800, now);
+        shimmer.frequency.exponentialRampToValueAtTime(220, now + 0.32);
+        shimmerGain.gain.setValueAtTime(0.18, now);
+        shimmerGain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+
+        shimmer.connect(shimmerGain);
+        shimmerGain.connect(this.ctx.destination);
+
+        laserOsc.start(now);
+        shimmer.start(now);
+        laserOsc.stop(now + 0.42);
+        shimmer.stop(now + 0.35);
+      }
+
+      // 2. Clean Water Audio: Heavy Water Splash + Liquid Bubble Bursts
+      playCleanWater() {
+        this.init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+
+        // White noise burst shaped into a liquid water splash
+        const duration = 0.65;
+        const bufferSize = Math.floor(this.ctx.sampleRate * duration);
+        const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+          data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (this.ctx.sampleRate * 0.22));
+        }
+
+        const noise = this.ctx.createBufferSource();
+        noise.buffer = buffer;
+
+        const splashFilter = this.ctx.createBiquadFilter();
+        splashFilter.type = 'bandpass';
+        splashFilter.Q.value = 1.4;
+        splashFilter.frequency.setValueAtTime(450, now);
+        splashFilter.frequency.exponentialRampToValueAtTime(1600, now + 0.12);
+        splashFilter.frequency.exponentialRampToValueAtTime(550, now + duration);
+
+        const splashGain = this.ctx.createGain();
+        splashGain.gain.setValueAtTime(0.75, now);
+        splashGain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+
+        noise.connect(splashFilter);
+        splashFilter.connect(splashGain);
+        splashGain.connect(this.ctx.destination);
+        noise.start(now);
+
+        // Water droplet / bubble pops
+        const bubbleTimes = [0.05, 0.11, 0.18, 0.25, 0.33];
+        bubbleTimes.forEach((offset, idx) => {
+          const osc = this.ctx.createOscillator();
+          const bGain = this.ctx.createGain();
+          const baseFreq = 420 + idx * 140;
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(baseFreq, now + offset);
+          osc.frequency.exponentialRampToValueAtTime(baseFreq * 2.1, now + offset + 0.08);
+
+          bGain.gain.setValueAtTime(0.25, now + offset);
+          bGain.gain.exponentialRampToValueAtTime(0.001, now + offset + 0.09);
+
+          osc.connect(bGain);
+          bGain.connect(this.ctx.destination);
+          osc.start(now + offset);
+          osc.stop(now + offset + 0.09);
+        });
+      }
+
+      // 3. Purified Air Audio: Hard Gust of Wind / Gale Blast
+      playPurifiedAir() {
+        this.init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+
+        // Pink/Brown-ish wind noise buffer for deep rushing gale power
+        const duration = 0.75;
+        const bufferSize = Math.floor(this.ctx.sampleRate * duration);
+        const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        let lastOut = 0.0;
+        for (let i = 0; i < bufferSize; i++) {
+          const white = Math.random() * 2 - 1;
+          data[i] = (lastOut + (0.08 * white)) / 1.08;
+          lastOut = data[i];
+          data[i] *= 3.2; // boost amplitude
+        }
+
+        const windSource = this.ctx.createBufferSource();
+        windSource.buffer = buffer;
+
+        // Sweeping resonant bandpass filter to simulate a hard howling gust
+        const windFilter = this.ctx.createBiquadFilter();
+        windFilter.type = 'bandpass';
+        windFilter.Q.value = 3.2;
+        windFilter.frequency.setValueAtTime(180, now);
+        windFilter.frequency.exponentialRampToValueAtTime(1150, now + 0.22);
+        windFilter.frequency.exponentialRampToValueAtTime(260, now + duration);
+
+        // Secondary high-air rush layer
+        const highAirFilter = this.ctx.createBiquadFilter();
+        highAirFilter.type = 'highpass';
+        highAirFilter.frequency.setValueAtTime(900, now);
+
+        const windGain = this.ctx.createGain();
+        windGain.gain.setValueAtTime(0.05, now);
+        windGain.gain.linearRampToValueAtTime(0.85, now + 0.14);
+        windGain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+
+        windSource.connect(windFilter);
+        windFilter.connect(windGain);
+        windGain.connect(this.ctx.destination);
+
+        windSource.start(now);
+        windSource.stop(now + duration);
+      }
+
+      // Boss Smog Attack Sound
+      playBossSmogHit() {
+        this.init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(140, now);
+        osc.frequency.exponentialRampToValueAtTime(48, now + 0.35);
+        gain.gain.setValueAtTime(0.45, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.35);
+      }
+
+      // Victory Fanfare
+      playVictory() {
+        this.init();
+        if (!this.ctx) return;
+        const notes = [261.63, 329.63, 392.00, 523.25, 659.25, 783.99];
+        notes.forEach((freq, idx) => {
+          const now = this.ctx.currentTime + idx * 0.09;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, now);
+          gain.gain.setValueAtTime(0.3, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.3);
+        });
+      }
+
+      // Defeat / One-Blow KO Sound
+      playDefeat() {
+        this.init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(160, now);
+        osc.frequency.linearRampToValueAtTime(35, now + 0.85);
+        gain.gain.setValueAtTime(0.55, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.85);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.85);
+      }
+    }
+
+    const audio = new EcoAudioEngine();
+
+    /* ===================================================================
+       4. GAME STATE & RANDOM POWER SHUFFLER
+       =================================================================== */
+    let currentQuestionIdx = 0;
+    let score = 0;
+    let combo = 0;
+    let playerHp = 100;
+    let bossHp = 100;
+    let isAnimating = false;
+    let powerDeck = [];
+
+    // DOM Elements
+    const roundBadge = document.getElementById('roundBadge');
+    const playerHpBar = document.getElementById('playerHpBar');
+    const playerHpText = document.getElementById('playerHpText');
+    const bossHpBar = document.getElementById('bossHpBar');
+    const bossHpText = document.getElementById('bossHpText');
+    const comboCounter = document.getElementById('comboCounter');
+    const comboHits = document.getElementById('comboHits');
+
+    const arena = document.getElementById('arena');
+    const playerSprite = document.getElementById('playerSprite');
+    const bossSprite = document.getElementById('bossSprite');
+    const fxLayer = document.getElementById('fxLayer');
+    const flashOverlay = document.getElementById('flashOverlay');
+    const damagePopContainer = document.getElementById('damagePopContainer');
+
+    const questionTopic = document.getElementById('questionTopic');
+    const questionText = document.getElementById('questionText');
+    const optionsGrid = document.getElementById('optionsGrid');
+    const resultModal = document.getElementById('resultModal');
+
+    // Pick a random eco-power (ensuring variety across turns)
+    function getNextRandomPower() {
+      if (powerDeck.length === 0) {
+        powerDeck = [...ECO_POWERS];
+        // Fisher-Yates shuffle
+        for (let i = powerDeck.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [powerDeck[i], powerDeck[j]] = [powerDeck[j], powerDeck[i]];
+        }
+      }
+      return powerDeck.pop();
+    }
+
+    /* ===================================================================
+       5. CORE GAME LOOP & INTERACTION (WITH RUNTIME OPTION SHUFFLING)
+       =================================================================== */
+    function initQuestion() {
+      if (currentQuestionIdx >= questions.length) {
+        evaluateFinalResult();
+        return;
+      }
+
+      const qData = questions[currentQuestionIdx];
+      roundBadge.textContent = `ROUND ${currentQuestionIdx + 1} / ${questions.length}`;
+      questionTopic.textContent = qData.topic;
+      questionText.textContent = qData.q;
+
+      // Shuffle option order on every question so the correct answer is evenly distributed
+      const indexedOptions = qData.options.map((text, idx) => ({
+        text,
+        isCorrect: idx === qData.answer
+      }));
+      for (let i = indexedOptions.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [indexedOptions[i], indexedOptions[j]] = [indexedOptions[j], indexedOptions[i]];
+      }
+
+      const shuffledCorrectIdx = indexedOptions.findIndex(item => item.isCorrect);
+
+      optionsGrid.innerHTML = '';
+      indexedOptions.forEach((optObj, i) => {
+        const btn = document.createElement('button');
+        btn.className = `w-full text-left p-3 sm:p-4 rounded-lg bg-gray-800 hover:bg-emerald-900/80 border-2 border-gray-700 hover:border-emerald-400 font-arcade text-xs sm:text-sm transition-all flex items-center gap-3 group active:scale-95`;
+        btn.innerHTML = `
+          <span class="w-6 h-6 sm:w-7 sm:h-7 rounded bg-gray-950 border border-emerald-400 flex justify-center items-center text-emerald-300 font-bold group-hover:bg-emerald-400 group-hover:text-black transition-colors shrink-0">
+            ${String.fromCharCode(65 + i)}
+          </span>
+          <span class="text-gray-200 group-hover:text-white leading-snug">${optObj.text}</span>
+        `;
+        btn.onclick = () => handleAnswer(i, shuffledCorrectIdx);
+        optionsGrid.appendChild(btn);
+      });
+
+      isAnimating = false;
+    }
+
+    function handleAnswer(selectedIndex, correctIndex) {
+      if (isAnimating) return;
+      isAnimating = true;
+
+      const isCorrect = (selectedIndex === correctIndex);
+
+      // Highlight selected & correct options
+      const buttons = optionsGrid.querySelectorAll('button');
+      buttons.forEach((b, idx) => {
+        b.disabled = true;
+        if (idx === correctIndex) {
+          b.classList.remove('bg-gray-800', 'border-gray-700');
+          b.classList.add('bg-emerald-900/90', 'border-emerald-400');
+        } else if (idx === selectedIndex && !isCorrect) {
+          b.classList.remove('bg-gray-800', 'border-gray-700');
+          b.classList.add('bg-red-900/90', 'border-red-500');
+        }
+      });
+
+      if (isCorrect) {
+        // HERO UNLEASHES RANDOM ECO-POWER
+        score++;
+        combo++;
+        const power = getNextRandomPower();
+
+        // Play unique audio for the chosen power
+        if (power.id === 'solar') audio.playSolarBeam();
+        else if (power.id === 'water') audio.playCleanWater();
+        else audio.playPurifiedAir();
+
+        // Hero cast animation
+        playerSprite.classList.remove('idle-player');
+        playerSprite.classList.add('hero-cast');
+
+        // Spawn Power Visual Projectile
+        const fxEl = document.createElement('div');
+        fxEl.className = power.fxClass;
+        fxLayer.appendChild(fxEl);
+        setTimeout(() => fxEl.remove(), 650);
+
+        // Show Power Callout above Hero
+        showPopText(power.name, 'hero', power.textColor);
+
+        setTimeout(() => {
+          bossHp = Math.max(0, bossHp - 10);
+          updateHpBars();
+
+          bossSprite.classList.add('hit-hurt');
+          triggerScreenShake();
+          triggerFlash(power.flashClass);
+          showPopText(`-10 HP! (${power.subtitle})`, 'boss', power.textColor);
+
+          if (combo > 1) {
+            comboHits.textContent = combo;
+            comboCounter.classList.remove('opacity-0');
+          }
+
+          setTimeout(() => {
+            playerSprite.classList.remove('hero-cast');
+            playerSprite.classList.add('idle-player');
+            bossSprite.classList.remove('hit-hurt');
+
+            currentQuestionIdx++;
+            initQuestion();
+          }, 500);
+        }, 260);
+
+      } else {
+        // WRONG ANSWER: GLOBAL WARMING BOSS STRIKES BACK
+        combo = 0;
+        comboCounter.classList.add('opacity-0');
+        audio.playBossSmogHit();
+
+        bossSprite.classList.remove('idle-boss');
+        bossSprite.classList.add('boss-attack');
+
+        setTimeout(() => {
+          playerHp = Math.max(0, playerHp - 10);
+          updateHpBars();
+
+          playerSprite.classList.add('hit-hurt');
+          triggerScreenShake();
+          triggerFlash('flash-red');
+          showPopText('-10 HP! TOXIC SMOG!', 'hero', 'text-red-400');
+
+          setTimeout(() => {
+            bossSprite.classList.remove('boss-attack');
+            bossSprite.classList.add('idle-boss');
+            playerSprite.classList.remove('hit-hurt');
+
+            currentQuestionIdx++;
+            initQuestion();
+          }, 500);
+        }, 220);
+      }
+    }
+
+    /* ===================================================================
+       6. VISUAL EFFECTS & ENDGAME EVALUATION
+       =================================================================== */
+    function updateHpBars() {
+      playerHpBar.style.width = `${playerHp}%`;
+      playerHpText.textContent = `${playerHp} HP`;
+      bossHpBar.style.width = `${bossHp}%`;
+      bossHpText.textContent = `${bossHp} HP`;
+    }
+
+    function triggerScreenShake() {
+      arena.classList.remove('shake');
+      void arena.offsetWidth;
+      arena.classList.add('shake');
+      setTimeout(() => arena.classList.remove('shake'), 400);
+    }
+
+    function triggerFlash(flashClass) {
+      flashOverlay.className = `flash-overlay ${flashClass}`;
+      setTimeout(() => {
+        flashOverlay.className = 'flash-overlay';
+      }, 450);
+    }
+
+    function showPopText(text, target, colorClass) {
+      const pop = document.createElement('div');
+      pop.className = `damage-pop text-[10px] sm:text-xs font-bold ${colorClass}`;
+      pop.textContent = text;
+
+      if (target === 'boss') {
+        pop.style.right = '10%';
+        pop.style.top = '22%';
+      } else {
+        pop.style.left = '10%';
+        pop.style.top = '22%';
+      }
+
+      damagePopContainer.appendChild(pop);
+      setTimeout(() => pop.remove(), 950);
+    }
+
+    function evaluateFinalResult() {
+      const accuracy = Math.round((score / questions.length) * 100);
+      const passed = accuracy >= 65;
+
+      document.getElementById('statScore').textContent = `${score} / ${questions.length}`;
+      document.getElementById('statAccuracy').textContent = `${accuracy}%`;
+
+      if (passed) {
+        audio.playVictory();
+        // Finish off Boss with all 3 powers combined!
+        triggerFlash('flash-air');
+        bossHp = 0;
+        updateHpBars();
+
+        document.getElementById('modalTitle').textContent = "EARTH PURIFIED!";
+        document.getElementById('modalTitle').className = "font-arcade text-2xl sm:text-4xl text-emerald-400 mb-3 animate-bounce";
+        document.getElementById('modalSubtitle').textContent = "5IRE ECO-HERO DEFEATED GLOBAL WARMING!";
+        document.getElementById('statStatus').textContent = "VICTORY (QUALIFIED)";
+        document.getElementById('statStatus').className = "text-emerald-400 font-bold";
+      } else {
+        audio.playDefeat();
+        bossSprite.classList.remove('idle-boss');
+        bossSprite.classList.add('boss-one-blow');
+        triggerScreenShake();
+        triggerFlash('flash-red');
+        playerHp = 0;
+        updateHpBars();
+
+        document.getElementById('modalTitle').textContent = "SMOG OVERLOAD K.O.!";
+        document.getElementById('modalTitle').className = "font-arcade text-2xl sm:text-4xl text-red-500 mb-3 animate-pulse";
+        document.getElementById('modalSubtitle').textContent = "ACCURACY BELOW 65% — TITAN UNLEASHED ONE-BLOW K.O.!";
+        document.getElementById('statStatus').textContent = "DEFEATED (ONE-BLOW K.O.)";
+        document.getElementById('statStatus').className = "text-red-500 font-bold";
+      }
+
+      setTimeout(() => {
+        resultModal.classList.remove('hidden');
+      }, 950);
+    }
+
+    function resetGame() {
+      currentQuestionIdx = 0;
+      score = 0;
+      combo = 0;
+      playerHp = 100;
+      bossHp = 100;
+      powerDeck = [];
+
+      updateHpBars();
+      comboCounter.classList.add('opacity-0');
+      bossSprite.classList.remove('boss-one-blow');
+      bossSprite.classList.add('idle-boss');
+      resultModal.classList.add('hidden');
+      initQuestion();
+    }
+
+    window.onload = function () {
+      initQuestion();
+    };
+  </script>
+</body>
+</html>
